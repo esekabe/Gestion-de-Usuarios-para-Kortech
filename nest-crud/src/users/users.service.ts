@@ -3,6 +3,7 @@ import {
   NotFoundException,
   ConflictException,
 } from '@nestjs/common';
+import { Not, IsNull } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
@@ -55,7 +56,11 @@ export class UsersService {
     }
 
     async findByCedulaWithContrasena(cedula: string): Promise<User | null> {
-        return this.userRepository.findOne({ where: { cedula } });
+        return this.userRepository
+            .createQueryBuilder('user')
+            .addSelect('user.contrasena')
+            .where('user.cedula = :cedula', { cedula })
+            .getOne();
     }
 
     withoutPassword(user: User): Omit<User, 'contrasena'> {
@@ -88,6 +93,32 @@ export class UsersService {
         }
         await this.userRepository.softRemove(user);
         return { message: `Usuario con ID ${id} desactivado correctamente` };
+    }
+
+    async restore(id: string): Promise<{message: string}> {
+        const result = await this.userRepository.restore(id);
+
+        if (!result.affected){
+            throw new NotFoundException('Usuario no encontrado');
+        }
+
+        return { message: `Usuario con ID ${id} restaurado correctamente`};
+    }
+
+    async findDeleted(): Promise<User[]> {
+        return this.userRepository.find({
+            withDeleted: true,
+            where: {
+            deletedAt: Not(IsNull()),
+            },
+            select: {
+            id: true,
+            nombre: true,
+            apellido: true,
+            cedula: true,
+            deletedAt: true,
+            },
+        });
     }
 
 

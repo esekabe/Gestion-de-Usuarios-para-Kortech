@@ -24,6 +24,13 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
+  @ApiOperation({ summary: 'Obtener usuarios eliminados'})
+  @ApiResponse({ status: 200, description: 'Lista de usuarios eliminados'})
+  @Get('deleted')
+  findDeleted() {
+    return this.usersService.findDeleted();
+  }
+
   @ApiOperation({ summary: 'Obtener detalles de un usuario por ID'})
   @ApiParam({ name: 'id', description: 'UUID del usuario'})
   @ApiResponse({ status: 200, description: 'Detalles del usuario'})
@@ -52,6 +59,13 @@ export class UsersController {
   @Delete(':id')
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.usersService.remove(id);
+  }
+
+  @ApiOperation({ summary: 'Restaurar un usuario (Soft Delete)'})
+  
+  @Patch(':id/restore')
+  restore(@Param('id', ParseUUIDPipe) id: string) {
+    return this.usersService.restore(id);
   }
   
 }
