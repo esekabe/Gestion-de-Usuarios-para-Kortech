@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 
 export function Login() {
@@ -39,7 +39,7 @@ export function Login() {
         <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
 
             <div className="max-w-md w-full bg-white rounded-lg shadow-md p-8">
-                <h2 className="text 2xl font-bold text-center text-gray-800 mb-6">
+                <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
                     Iniciar Sesión
                 </h2>
 
@@ -89,6 +89,17 @@ export function Login() {
                         {loading ? 'Iniciando sesión...' : 'Iniciar sesión'}
                     </button>
                 </form>
+                
+                <div className="mt-6 border-t border-gray-200 pt-4 text-center">
+                    <p className="text-sm text-gray-600 mb-2">¿No tienes un usuario registrado?</p>
+                    <Link
+                        to="/users/new"
+                        className="inline-block w-full text-center bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-md transition duration-200 text-sm"
+                    >
+                        Registrar nuevo usuario
+                    </Link>
+                </div>
+
             </div>
 
         </div>
